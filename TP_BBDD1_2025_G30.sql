@@ -458,5 +458,80 @@ SELECT * FROM info_reclamos;
 GO
 
 ----b. Resumen de tareas ya realizadas según su tipo. Se desea saber la fecha de 
-----la primer y última tarea de cada tipo y la cantidad de tareas realizadas 
+----la primer y última tarea de cada tipo y la cantidad de tareas realizadas
 
+SELECT * FROM Tarea
+GO
+
+SELECT * FROM Tipo_Tarea
+GO
+
+
+DROP VIEW resumen_tareas
+GO
+
+CREATE VIEW resumen_tareas AS
+SELECT tt.nombre AS tipo_tarea, COUNT(tt.nombre) AS cantidad, MIN(t.fecha_realizacion) AS primera_tarea, MAX(t.fecha_realizacion) AS ultima_tarea
+FROM Tarea t
+JOIN Tipo_Tarea tt ON t.id_tipo_tarea = tt.id_tipo_tarea
+WHERE t.estado = 'Finalizada'
+GROUP BY tt.nombre
+GO
+SELECT * FROM resumen_tareas;
+GO
+
+-----6. Escriba un procedimiento almacenado para identificar si existen tareas no realizadas
+-----dado un árbol en particular y un tipo de tareas. El procedimiento debe devolver:
+----a. Como parámetro de salida, la fecha de la próxima tarea del tipo indicado a
+----realizarse sobre el árbol, si existiera.SELECT * FROM TareaGO
+
+
+DROP PROCEDURE verificar_tareas;
+GO
+
+CREATE PROCEDURE verificar_tareas
+	@arbol_id VARCHAR(50),
+	@tipo_tarea_id INT,
+	@proxima_tarea DATE OUTPUT
+AS
+BEGIN
+	DECLARE @cant_tareas_pendientes INT;
+
+	SElECT @cant_tareas_pendientes = COUNT(*)
+	FROM Tarea t
+	JOIN Tarea_Arbol ta ON ta.id_tarea = t.id_tarea
+	WHERE t.estado = 'Pendiente' AND  ta.id_arbol = @arbol_id AND t.id_tipo_tarea = @tipo_tarea_id
+	SELECT TOP 1 @proxima_tarea = t.fecha_planificada
+	FROM Tarea t
+	JOIN Tarea_Arbol ta ON ta.id_tarea = t.id_tarea
+	WHERE t.estado = 'Pendiente' AND  ta.id_arbol = @arbol_id AND t.id_tipo_tarea = @tipo_tarea_id
+	ORDER BY t.fecha_planificada ASC
+	RETURN @cant_tareas_pendientes
+END
+GO
+
+
+SELECT * FROM Tarea_Arbol
+GO
+
+
+DECLARE @mi_fecha DATE;
+DECLARE @mi_cantidad INT;
+
+EXEC @mi_cantidad = verificar_tareas 
+    @arbol_id = 'ARB042',   
+    @tipo_tarea_id = 2,
+    @proxima_tarea = @mi_fecha OUTPUT;
+SELECT 
+    @mi_cantidad AS 'Tareas Pendientes',
+    @mi_fecha AS 'Fecha Próxima Tarea';
+
+
+
+
+--7. Punto Bonus (no obligatorio). Identifique aquellos campos que se utilicen en
+--búsquedas o cláusulas WHERE y JOIN en las consultas, vistas o procedimientos de
+--los puntos 4, 5 y 6 y proceda a crear al menos cinco índices que permitan mejorar la
+--eficiencia de estas consultas, mencionando que consultas y cláusulas (JOIN /
+--WHERE) podría mejorar cada uno (podría ser que uno de ellos mejore más de una
+--consulta).
