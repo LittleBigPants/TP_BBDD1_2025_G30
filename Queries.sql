@@ -70,6 +70,8 @@ GO
 SELECT * FROM resumen_tareas;
 GO
 
+
+
 -----6. Escriba un procedimiento almacenado para identificar si existen tareas no realizadas
 -----dado un árbol en particular y un tipo de tareas. El procedimiento debe devolver:
 ----a. Como parámetro de salida, la fecha de la próxima tarea del tipo indicado a
@@ -117,6 +119,18 @@ SELECT
     @mi_fecha AS 'Fecha Próxima Tarea';
 
 
+DECLARE @mi_fecha2 DATE;
+DECLARE @mi_cantidad2 INT;
+
+EXEC @mi_cantidad2 = verificar_tareas 
+    @arbol_id = 'ARB001',   
+    @tipo_tarea_id = 1,
+    @proxima_tarea = @mi_fecha2 OUTPUT;
+
+SELECT 
+    @mi_cantidad2 AS 'Tareas Pendientes',
+    @mi_fecha2 AS 'Fecha Próxima Tarea';
+
 
 
 --7. Punto Bonus (no obligatorio). Identifique aquellos campos que se utilicen en
@@ -125,3 +139,33 @@ SELECT
 --eficiencia de estas consultas, mencionando que consultas y cláusulas (JOIN /
 --WHERE) podría mejorar cada uno (podría ser que uno de ellos mejore más de una
 --consulta).
+
+CREATE NONCLUSTERED INDEX Index_Tarea_Fecha_realizacion
+ON Tarea(fecha_realizacion)
+INCLUDE (id_cuadrilla, estado);
+-- Ordena por: fecha_realizacion
+
+
+CREATE NONCLUSTERED INDEX Idex_ReclamoTarea_IdReclamo
+ON Reclamo_Tarea(id_reclamo)
+INCLUDE (id_tarea, fecha_asignacion);
+GO
+-- Ordena por: id_reclamo menor a mayor
+
+CREATE NONCLUSTERED INDEX Index_Tarea_Estado
+ON Tarea(estado)
+INCLUDE (id_tipo_tarea, fecha_realizacion, fecha_planificada);
+GO
+-- Ordena por: estado, alfabeticamente
+
+CREATE NONCLUSTERED INDEX Index_Tarea_Arbol_Id_Arbol
+ON Tarea_Arbol(id_arbol)
+INCLUDE (id_tarea);
+GO
+-- Ordena por: id_arbol alfabeticamente
+
+CREATE NONCLUSTERED INDEX Index_Tarea_Estado_Tipo_Fecha
+ON Tarea(estado, id_tipo_tarea, fecha_planificada)
+INCLUDE (id_tarea);
+GO
+-- Ordena por: estado, despues por id_tipo_tarea y por ultimo por fecha_planificada
