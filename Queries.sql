@@ -1,5 +1,5 @@
 USE TP_BBDD1_2025_G30
----a. Mostrar la cuadrilla que más tareas realizó en el mes 
+---a. Mostrar la cuadrilla que mï¿½s tareas realizï¿½ en el mes 
 ---de Octubre 10, y 
 --la cantidad de tareas realizadas.
 
@@ -9,7 +9,7 @@ WHERE ta.fecha_realizacion >= '2025-10-01' and  ta.fecha_realizacion < '2025-11-
 GROUP BY nombre
 ORDER BY cantidad_tareas DESC
 
----- b Mostrar los Motivos de Reclamos que tengan más de 3 reclamos en estado 
+---- b Mostrar los Motivos de Reclamos que tengan mï¿½s de 3 reclamos en estado 
 ----no asignado (sin tarea). 
 
 SELECT mt.nombre AS razon_reclamo, count(r.id_reclamo) AS cant_reclamos FROM Reclamo r
@@ -20,7 +20,7 @@ WHERE rt.id_reclamo is null
 GROUP BY mt.nombre
 HAVING count(r.id_reclamo) > 3
 
---- c Mostrar los Árboles (código, especie y ubicación) que no tengan ningún 
+--- c Mostrar los ï¿½rboles (cï¿½digo, especie y ubicaciï¿½n) que no tengan ningï¿½n 
 --- reclamo.
 SELECT A.id_arbol AS Codigo_Arbol, Es.nombre_comun AS Especie, U.nombre AS Ubicacion
 FROM Arbol A
@@ -29,7 +29,7 @@ INNER JOIN Ubicacion U ON A.id_ubicacion = U.id_ubicacion
 LEFT JOIN Reclamo R ON A.id_arbol = R.id_arbol
 WHERE R.id_reclamo IS NULL;
 
------ d. Mostrar los tres árboles (código y altura) más altos de cada especie. Mostrar 
+----- d. Mostrar los tres ï¿½rboles (cï¿½digo y altura) mï¿½s altos de cada especie. Mostrar 
 --los resultados ordenados por especie y luego altura decreciente. 
 
 SELECT
@@ -58,12 +58,12 @@ ORDER BY
     ES.nombre_cientifico,
     AM.altura_m DESC;
 
------5. Escriba las siguientes vistas. Proporcione dos ejemplos de ejecución usando cada una de ellas: 
+-----5. Escriba las siguientes vistas. Proporcione dos ejemplos de ejecuciï¿½n usando cada una de ellas: 
 
-----a. Mostrar información de los reclamos. Se desea saber la fecha de cada uno, 
-----el código del árbol asociado al reclamo, la cantidad de días que se tardó en 
-----asignar la tarea y la cantidad de días que se tardó en resolver el mismo. Si 
-----no tiene tarea asignada o no fue resuelto calcular los días hasta la fecha actual. 
+----a. Mostrar informaciï¿½n de los reclamos. Se desea saber la fecha de cada uno, 
+----el cï¿½digo del ï¿½rbol asociado al reclamo, la cantidad de dï¿½as que se tardï¿½ en 
+----asignar la tarea y la cantidad de dï¿½as que se tardï¿½ en resolver el mismo. Si 
+----no tiene tarea asignada o no fue resuelto calcular los dï¿½as hasta la fecha actual. 
 
 DROP VIEW info_reclamos
 GO
@@ -78,8 +78,8 @@ GO
 SELECT * FROM info_reclamos;
 GO
 
-----b. Resumen de tareas ya realizadas según su tipo. Se desea saber la fecha de 
-----la primer y última tarea de cada tipo y la cantidad de tareas realizadas
+----b. Resumen de tareas ya realizadas segï¿½n su tipo. Se desea saber la fecha de 
+----la primer y ï¿½ltima tarea de cada tipo y la cantidad de tareas realizadas
 
 SELECT * FROM Tarea
 GO
@@ -97,19 +97,21 @@ GO
 SELECT * FROM resumen_tareas;
 GO
 
------6. Escriba un procedimiento almacenado para identificar si existen tareas no realizadas
------dado un árbol en particular y un tipo de tareas. El procedimiento debe devolver:
 
-----a. Como parámetro de salida, la fecha de la próxima tarea del tipo indicado a
-----realizarse sobre el árbol, si existiera.
+
+-----6. Escriba un procedimiento almacenado para identificar si existen tareas no realizadas
+-----dado un ï¿½rbol en particular y un tipo de tareas. El procedimiento debe devolver:
+
+----a. Como parï¿½metro de salida, la fecha de la prï¿½xima tarea del tipo indicado a
+----realizarse sobre el ï¿½rbol, si existiera.
 
 SELECT * FROM Tarea
 GO
 
 
 
---DROP PROCEDURE verificar_tareas;
---GO
+DROP PROCEDURE verificar_tareas;
+GO
 
 CREATE PROCEDURE verificar_tareas
 	@arbol_id VARCHAR(50),
@@ -131,8 +133,12 @@ BEGIN
 	RETURN @cant_tareas_pendientes
 END
 GO
+
+
 SELECT * FROM Tarea_Arbol
 GO
+
+
 DECLARE @mi_fecha DATE;
 DECLARE @mi_cantidad INT;
 
@@ -142,7 +148,7 @@ EXEC @mi_cantidad = verificar_tareas
     @proxima_tarea = @mi_fecha OUTPUT;
 SELECT 
     @mi_cantidad AS 'Tareas Pendientes',
-    @mi_fecha AS 'Fecha Próxima Tarea';
+    @mi_fecha AS 'Fecha Prï¿½xima Tarea';
 
 
 DECLARE @mi_fecha2 DATE;
@@ -155,15 +161,15 @@ EXEC @mi_cantidad2 = verificar_tareas
 
 SELECT 
     @mi_cantidad2 AS 'Tareas Pendientes',
-    @mi_fecha2 AS 'Fecha Próxima Tarea';
+    @mi_fecha2 AS 'Fecha Prï¿½xima Tarea';
 
 
 
 --7. Punto Bonus (no obligatorio). Identifique aquellos campos que se utilicen en
---búsquedas o cláusulas WHERE y JOIN en las consultas, vistas o procedimientos de
---los puntos 4, 5 y 6 y proceda a crear al menos cinco índices que permitan mejorar la
---eficiencia de estas consultas, mencionando que consultas y cláusulas (JOIN /
---WHERE) podría mejorar cada uno (podría ser que uno de ellos mejore más de una
+--bï¿½squedas o clï¿½usulas WHERE y JOIN en las consultas, vistas o procedimientos de
+--los puntos 4, 5 y 6 y proceda a crear al menos cinco ï¿½ndices que permitan mejorar la
+--eficiencia de estas consultas, mencionando que consultas y clï¿½usulas (JOIN /
+--WHERE) podrï¿½a mejorar cada uno (podrï¿½a ser que uno de ellos mejore mï¿½s de una
 --consulta).
 
 CREATE NONCLUSTERED INDEX Index_Tarea_Fecha_realizacion
