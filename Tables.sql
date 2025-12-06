@@ -4,20 +4,20 @@ USE TP_BBDD1_2025_G30
 ---se agregaron los nombres completos correspondientes a las pk 'id' de las tablas que se utilizan como clave foranea.
 
 CREATE TABLE Motivo_Reclamo(
- id_motivo INT IDENTITY(1,1) PRIMARY KEY NOT NULL,
- nombre nvarchar(150) NOT NULL
+ id_motivo INT IDENTITY(1,1) PRIMARY KEY  NOT NULL,
+ nombre nvarchar(150) UNIQUE NOT NULL
 )
 
 CREATE TABLE Estado_Salud(
 id_salud INT IDENTITY(1,1) PRIMARY KEY not null,
-estado varchar(30),
+estado varchar(30) UNIQUE,
 observaciones nvarchar(255)
 )
 
 CREATE TABLE Especie(
 id_especie INT IDENTITY(1,1) PRIMARY KEY, --cambio de 'id' a 'id_especie'
-nombre_comun nvarchar(100) NOT NULL,
-nombre_cientifico nvarchar(150)
+nombre_comun nvarchar(100) NOT NULL UNIQUE,
+nombre_cientifico nvarchar(150) UNIQUE
 )
 
 
@@ -33,8 +33,8 @@ coordenadas varchar(30)
 
 CREATE TABLE Cuadrilla(
 id_cuadrilla INT PRIMARY KEY IDENTITY(1,1),
-codigo varchar(20) NOT NULL,
-nombre nvarchar(100) NOT NULL, --NOT NULL agregado
+codigo varchar(20) NOT NULL UNIQUE,
+nombre nvarchar(100) NOT NULL UNIQUE, --NOT NULL agregado
 )
 
 CREATE TABLE Tipo_Tarea(

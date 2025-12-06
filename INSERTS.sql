@@ -246,6 +246,33 @@ GO
 SELECT * FROM reclamo;
 GO
 
+---Altura_medicion
+
+INSERT INTO Altura_medicion (id_arbol, altura_m, fecha_medicion) VALUES
+('ARB001', 12.50, '2025-01-10'), 
+('ARB003', 8.20, '2025-02-15'),
+('ARB005', 15.00, '2025-03-01'), 
+('ARB010', 9.80, '2025-04-22'), 
+('ARB015', 7.10, '2025-05-05'), 
+('ARB020', 11.30, '2025-06-18'),
+('ARB025', 10.50, '2025-07-25'),
+('ARB031', 6.90, '2025-08-01'),
+('ARB035', 13.70, '2025-09-11'),
+('ARB040', 8.50, '2025-10-03'),
+('ARB002', 9.10, '2024-11-01'),
+('ARB002', 9.50, '2025-11-01'), 
+('ARB011', 5.50, '2024-10-01'),
+('ARB011', 5.75, '2025-10-01'),
+('ARB022', 14.00, '2025-01-20'),
+('ARB022', 14.15, '2025-09-20'),
+('ARB033', 10.00, '2024-05-15'),
+('ARB033', 10.30, '2025-05-15'),
+('ARB045', 6.20, '2025-03-05'),
+('ARB045', 6.50, '2025-08-05');
+GO
+
+SELECT * FROM Altura_medicion;
+
 -- 4. INSERTAR VINCULACIONES en Reclamo_Tarea
 INSERT INTO Reclamo_Tarea (id_reclamo, id_tarea, fecha_asignacion) VALUES
 (1, 1, '2025-07-30 08:00:00'),
