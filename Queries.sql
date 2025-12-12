@@ -32,31 +32,40 @@ WHERE R.id_reclamo IS NULL;
 ----- d. Mostrar los tres �rboles (c�digo y altura) m�s altos de cada especie. Mostrar 
 --los resultados ordenados por especie y luego altura decreciente. 
 
+WITH Arboles_Clasificados AS (
+    SELECT
+        E.nombre_comun AS Nombre_especie,
+        A.id_arbol AS Codigo_arbol,
+        AM.altura_m AS Altura,
+        ROW_NUMBER() OVER (
+            PARTITION BY E.id_especie
+            ORDER BY AM.altura_m DESC, E.nombre_comun ASC 
+        ) AS RangoAltura
+    FROM
+        Especie E
+    INNER JOIN
+        Arbol A ON E.id_especie = A.id_especie
+    INNER JOIN
+        Altura_medicion AM ON A.id_arbol = AM.id_arbol
+    WHERE
+        AM.id_altura_medicion = (
+            SELECT TOP 1 id_altura_medicion
+            FROM Altura_medicion
+            WHERE id_arbol = A.id_arbol
+            ORDER BY fecha_medicion DESC, id_altura_medicion DESC
+        )
+)
 SELECT
-    ES.nombre_cientifico,
-    A.id_arbol,
-    AM.altura_m
+    Nombre_especie,
+    Codigo_arbol,
+    Altura
 FROM
-    Especie ES
-JOIN
-    Arbol A ON ES.id_especie = A.id_especie
-JOIN
-    Altura_medicion AM ON A.id_arbol = AM.id_arbol
+    Arboles_Clasificados
 WHERE
-    (
-        SELECT
-            COUNT(AM2.altura_m)
-        FROM
-            Arbol A2
-        JOIN
-            Altura_medicion AM2 ON A2.id_arbol = AM2.id_arbol
-        WHERE
-            A2.id_especie = A.id_especie
-            AND AM2.altura_m > AM.altura_m
-    ) < 3
+    RangoAltura <= 3
 ORDER BY
-    ES.nombre_cientifico,
-    AM.altura_m DESC;
+    Nombre_especie ASC,
+    Altura DESC;      
 
 -----5. Escriba las siguientes vistas. Proporcione dos ejemplos de ejecuci�n usando cada una de ellas: 
 
